@@ -1,0 +1,149 @@
+/* 
+    Created on : 21/12/2017, 12:54:38 PM
+    Author     : GM
+*/
+@font-face { 
+    font-family: StagSanslight; 
+    src: url('fonts/Stag Sans - Light.otf'); 
+} 
+@font-face { 
+    font-family: StagSansthin; 
+    src: url('fonts/Stag Sans - Thin.otf'); 
+} 
+@font-face { 
+    font-family: StagSansBookitalic; 
+    src: url('fonts/Stag Sans - Book Italic.otf'); 
+} 
+@font-face { 
+    font-family: StagSansMedium; 
+    src: url('fonts/Stag Sans - Book Italic.otf'); 
+}
+@font-face { 
+    font-family: StagSansBook; 
+    src: url('fonts/Stag Sans - Book.otf'); 
+}
+@font-face { 
+    font-family: StagSansMedium2; 
+    src: url('fonts/Stag Sans - Medium.otf'); 
+}
+
+.StagSansthin {
+    font-family: 'StagSansthin';
+    color: #2A86CA !important;
+}
+.StagSanslight{
+    font-family: 'StagSanslight';
+    color: white !important;
+}
+.StagSansMedium{
+    font-family: 'StagSansMedium2';
+    color: #2A86CA;
+
+}
+.StagSansMedium2{
+    font-family: 'StagSansMedium2';
+    color: #2A86CA;
+}
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    font-family: 'StagSansBookitalic'; 
+    color: white !important;
+}
+::-moz-placeholder { /* Firefox 19+ */
+    font-family: 'StagSansBookitalic';
+    color: white !important;
+}
+:-ms-input-placeholder { /* IE 10+ */
+    font-family: 'StagSansBookitalic';
+    color: white !important;
+}
+:-moz-placeholder { /* Firefox 18- */
+    font-family: 'StagSansBookitalic';
+    color: white !important;
+}
+.azul-btn{
+    font-family: 'StagSanslight';
+    background-color: #043263;
+    color: white;
+}
+.azul-iconos{
+    color: #2A86CA;
+}
+.azul-select{
+    background-color: #043263;
+}
+.azul-input{
+    background-color: #043263;
+    font-family: 'StagSanslight';
+    color: #D1D1D1;
+}
+.est-select{
+
+    padding-top: 0rem;
+    padding-right: 0.5rem;
+    padding-bottom: 0rem;
+    padding-left: 0.5rem;
+
+}
+
+.posicion-select{
+    left: -100% !important;
+    font-family: 'StagSanslight' !important;
+    transform: translate3d(-230px, 38px, 0px) !important;
+}
+
+.azul-cuadros{
+   background-color: #043263;
+    font-family: 'StagSanslight';
+    color: white; 
+}
+
+.negro-cuadros{
+   background-color: darkslategray;
+    font-family: 'StagSanslight';
+    color: white; 
+}
+
+.letra-cuadros{
+    font-family: 'StagSanslight';
+    color: black;
+    font-size: 12px;
+}
+
+.padinglr{
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+.letra-input{
+    font-family: 'StagSanslight';
+    color: black;
+    font-size: 14px;
+    text-align: center;
+}
+.letra-confirmacion{
+    font-family: 'StagSansBook';
+    color: #86C82D;
+}
+.color-confirmacion{
+    color: #86C82D;
+}
+.letra-confirmacion-arial{
+    font-family: 'StagSansthin';
+    color: #666666;
+}
+body,html{
+height:100% !important;
+overflow-x: hidden;
+overflow-y: visible;
+
+}
+
+.ui-accordion-header{
+    font-family: 'StagSanslight';
+    background-color: #043263;
+    color: white;
+    font-weight: bold; 
+}
+
+
+

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta http-equiv='Content-type' content='text/html; charset=<?php echo APP_CHARSET ?>' />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Cancelacion</title>
+        <?php //Tag::css('css/materialize.min') ?>
+        <?php Tag::css('glide/css/glide.core');?>
+        <?php Tag::css('glide/css/glide.theme');?>
+        <?php Tag::css('cssappmovil');?>
+        <?php Tag::css('validation/validationEngine.jquery') ?>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <!--<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />-->
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        
+        <!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <!--<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>-->
+        <?php //echo Tag::js('js/materialize.min') ?>
+        <?php echo Tag::js('validation/languages/jquery.validationEngine-es') ?>
+        <?php echo Tag::js('validation/jquery.validationEngine') ?>
+        <?php echo Tag::js('index') ?>
+        <?php echo Tag::js('glide/glide') ?>
+        <script src="https://use.fontawesome.com/2328b57cf8.js"></script>
+        <?php echo Html::includeCss() ?>
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    </head>
+    <body>
+        
+        <div id='container' style="height: 100%;max-height: 100%;min-height: 100%; display: block;">
+            <?php if (Session::get('sesion') === 1) { ?>
+            <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #072146;">
+                <?php }else{ ?>
+                <nav class="navbar navbar-expand-md navbar-light bg-white">
+                <?php } ?>
+                <?php if (Session::get('sesion') === 1) { ?>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <span class="navbar-brand StagSanslight" href="#" style="font-size: 18px;">Identificaci&oacute;n de cancelaciones</span>
+                <?php }else{ ?>
+                <a class="navbar-brand" href="#"><?php echo Html::img('default/logo-bbva.png', 'BBVA', 'style="height: 55px;"') ?></a>
+                <?php } ?>
+                <?php if (Session::get('sesion') === 1) { ?>
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a href="#" id="signout" class="nav-link menu_out text-white StagSanslight"><i class="fa fa-sign-out" aria-hidden="true"></i>Salir</a>
+                        </li>
+                        
+                    </ul>
+
+                </div>
+                <?php } ?>
+            </nav>
+
+            <?php View::content(); ?>
+
+            <?php View::partial('kumbia/footer'); ?>
+        </div>
+    </body>
+</html>

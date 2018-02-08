@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <style>
+            .ui-autocomplete {
+                max-height: 100px;
+                overflow-y: auto;
+                /* prevent horizontal scrollbar */
+                overflow-x: hidden;
+            }
+            /* IE 6 doesn't support max-height
+             * we use height instead, but this forces the menu to always be this tall
+             */
+            * html .ui-autocomplete {
+                height: 100px;
+            }
+
+        </style>
+        <script>
+            function removeIfInvalid(event, ui, _this, ul) {
+                _this = $(_this);
+                // Selected an item, nothing to do
+                if (ui.item) {
+                    return;
+                } else {
+                    _this.prop('title', 'Selecciona ' + _this.attr('aria-label'));
+                    _this.tooltip({
+                        my: 'bottom', at: "left-50 bottom", collision: "flip",
+                        show: {effect: "fade", duration: 800},
+                        hide: {effect: "fade", duration: 800},
+                        classes: {
+                            "ui-tooltip": "ui-state-highlight"
+                        }
+                    });
+                    _this.tooltip('open');
+                    setTimeout(function () {
+                        _this.tooltip('close');
+                        _this.prop('title', '');
+                    }, 3000);
+                    _this.val("");
+                    deshabilitar(_this);
+                }
+
+                // Search for a match (case-insensitive)
+                var value = _this.val(),
+                        valueLowerCase = value.toLowerCase(),
+                        valid = false;
+
+                $('#' + ul.id).children("li").each(function () {
+                    if ($(this).children('div').text().toLowerCase() === valueLowerCase) {
+                        valid = true;
+                        return false;
+                    }
+                });
+                // Found a match, nothing to do
+                if (valid) {
+                    return;
+                }
+
+                // Remove invalid value
+                _this.val("");
+
+                _this.autocomplete("instance").term = "";
+            }
+
+            function deshabilitar(item) {
+                if (item[0].id === 'entidad') {
+                    $("#hientidad").val('');
+                    $("#hientidadcompleto").val('');
+                    $("#cliente").prop('disabled', true);
+                    $("#cliente").val('');
+                    $("#hipromotor").val('');
+                    $("#proyecto").val('');
+                    $("#hiproyecto").val('');
+                    $("#proyecto").prop('disabled', true);
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'cliente') {
+                    $("#hipromotor").val('');
+                    $("#proyecto").prop('disabled', true);
+                    $("#proyecto").val('');
+                    $("#hiproyecto").val('');
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'proyecto') {
+                    $("#hiproyecto").val('');
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'valor_1') {
+                    $("#hivalor1").val('');
+                    $("#hivalor2").val('');
+                    $("#hivalor3").val('');
+                    $("#hivalor4").val('');
+                    $("#hivalor5").val('');
+                    $("#valor_2").val('');
+                    $("#valor_2").prop('disabled', true);
+                    $("#valor_3").val('');
+                    $("#valor_3").prop('disabled', true);
+                    $("#valor_4").val('');
+                    $("#valor_4").prop('disabled', true);
+                    $("#valor_5").val('');
+                    $("#valor_5").prop('disabled', true);
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'valor_2') {
+                    $("#hivalor2").val('');
+                    $("#hivalor3").val('');
+                    $("#hivalor4").val('');
+                    $("#hivalor5").val('');
+                    $("#valor_3").val('');
+                    $("#valor_3").prop('disabled', true);
+                    $("#valor_4").val('');
+                    $("#valor_4").prop('disabled', true);
+                    $("#valor_5").val('');
+                    $("#valor_5").prop('disabled', true);
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'valor_3') {
+                    $("#hivalor3").val('');
+                    $("#hivalor4").val('');
+                    $("#hivalor5").val('');
+                    $("#valor_4").val('');
+                    $("#valor_4").prop('disabled', true);
+                    $("#valor_5").val('');
+                    $("#valor_5").prop('disabled', true);
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'valor_4') {
+                    $("#hivalor4").val('');
+                    $("#hivalor5").val('');
+                    $("#valor_5").val('');
+                    $("#valor_5").prop('disabled', true);
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'valor_5') {
+                    $("#hivalor5").val('');
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'int_fin_1') {
+                    $("#hiinstitucion1").val('');
+                    if ($('#chk_credito_comp').is(':checked')) {
+                        $("#btn_continuar").prop('disabled', true);
+                        $('.int_fin_2').prop('disabled', true);
+                        $("#hiinstitucion2").val('');
+                        $("#int_fin_2").val('');
+                    } else {
+                        $("#btn_continuar").prop('disabled', true);
+                    }
+                } else if (item[0].id === 'int_fin_2') {
+                    $("#hiinstitucion2").val('');
+                    if ($('#chk_credito_comp').is(':checked')) {
+                        $("#btn_continuar").prop('disabled', true);
+                    } else {
+                        $("#btn_continuar").prop('disabled', true);
+                    }
+                }
+            }
+
+            function valida(item) {
+                var valores = '';
+                var chk = item.attr('id') === 'pantalla_3' ? true : false;
+
+                item.find("input[type='text']").each(function () {
+                    if (chk) {
+                        if ($('#chk_credito_comp').is(':checked') && !$('#chk_credito_cont').is(':checked') && !$('#chk_credito_cancel').is(':checked')) {
+                            if ($(this).val() === '') {
+                                valores += $(this).attr('aria-label') + '<br>';
+                            }
+                        } else if (!$('#chk_credito_comp').is(':checked') && !$('#chk_credito_cont').is(':checked') && !$('#chk_credito_cancel').is(':checked')) {
+                            if ($(this).attr('id') !== 'int_fin_2') {
+                                if ($(this).val() === '') {
+                                    valores += $(this).attr('aria-label') + '<br>';
+                                }
+                            }
+                        }
+
+                    } else {
+                        if ($(this).attr('id') !== 'valor_4' && $(this).attr('id') !== 'valor_5') {
+                            if ($(this).val() === '') {
+                                valores += $(this).attr('aria-label') + '<br>';
+                            }
+                        }
+                    }
+
+                });
+                if (valores !== '') {
+                    $('#item_valida').html('').html(valores);
+                    $('#modal_valida').modal('show');
+                    return false;
+                } else {
+                    return true;
+                }
+
+
+            }
+
+            function deshabilitaXcambio(item) {
+                if (item[0].id === 'entidad') {
+                    $("#cliente").prop('disabled', false);
+                    $("#cliente").val('');
+                    $("#hipromotor").val('');
+                    $("#proyecto").val('');
+                    $("#hiproyecto").val('');
+                    $("#proyecto").prop('disabled', true);
+                    $("#valor_1").val('');
+                    $("#hivalor1").val('');
+                    $("#valor_1").prop('disabled', false);
+                    $("#hivalor2").val('');
+                    $("#valor_2").val('');
+                    $("#valor_2").prop('disabled', true);
+                    $("#hivalor3").val('');
+                    $("#valor_3").val('');
+                    $("#valor_3").attr('disabled', true);
+                    $("#hivalor4").val('');
+                    $("#valor_4").val('');
+                    $("#valor_4").attr('disabled', true);
+                    $("#hivalor5").val('');
+                    $("#valor_5").val('');
+                    $("#valor_5").attr('disabled', true);
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'cliente') {
+                    $("#proyecto").val('');
+                    $("#hiproyecto").val('');
+                    $("#proyecto").prop('disabled', false);
+                    $("#valor_1").val('');
+                    $("#hivalor1").val('');
+                    $("#valor_1").prop('disabled', false);
+                    $("#hivalor2").val('');
+                    $("#valor_2").val('');
+                    $("#valor_2").prop('disabled', true);
+                    $("#hivalor3").val('');
+                    $("#valor_3").val('');
+                    $("#valor_3").attr('disabled', true);
+                    $("#hivalor4").val('');
+                    $("#valor_4").val('');
+                    $("#valor_4").attr('disabled', true);
+                    $("#hivalor5").val('');
+                    $("#valor_5").val('');
+                    $("#valor_5").attr('disabled', true);
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'proyecto') {
+                    $("#valor_1").val('');
+                    $("#hivalor1").val('');
+                    $("#valor_1").prop('disabled', false);
+                    $("#hivalor2").val('');
+                    $("#valor_2").val('');
+                    $("#valor_2").prop('disabled', true);
+                    $("#hivalor3").val('');
+                    $("#valor_3").val('');
+                    $("#valor_3").attr('disabled', true);
+                    $("#hivalor4").val('');
+                    $("#valor_4").val('');
+                    $("#valor_4").attr('disabled', true);
+                    $("#hivalor5").val('');
+                    $("#valor_5").val('');
+                    $("#valor_5").attr('disabled', true);
+                    $("#btn_continuar").prop('disabled', false);
+                } else if (item[0].id === 'valor_1') {
+                    $("#hivalor2").val('');
+                    $("#valor_2").val('');
+                    $("#valor_2").prop('disabled', false);
+                    $("#hivalor3").val('');
+                    $("#valor_3").val('');
+                    $("#valor_3").attr('disabled', true);
+                    $("#hivalor4").val('');
+                    $("#valor_4").val('');
+                    $("#valor_4").attr('disabled', true);
+                    $("#hivalor5").val('');
+                    $("#valor_5").val('');
+                    $("#valor_5").attr('disabled', true);
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'valor_2') {
+                    $("#hivalor3").val('');
+                    $("#valor_3").val('');
+                    $("#valor_3").attr('disabled', false);
+                    $("#hivalor4").val('');
+                    $("#valor_4").val('');
+                    $("#valor_4").attr('disabled', true);
+                    $("#hivalor5").val('');
+                    $("#valor_5").val('');
+                    $("#valor_5").attr('disabled', true);
+                    $("#btn_continuar").prop('disabled', true);
+                } else if (item[0].id === 'valor_3') {
+                    $("#hivalor4").val('');
+                    $("#valor_4").val('');
+                    $("#valor_4").attr('disabled', false);
+                    $("#hivalor5").val('');
+                    $("#valor_5").val('');
+                    $("#valor_5").attr('disabled', true);
+                    $("#btn_continuar").prop('disabled', false);
+                } else if (item[0].id === 'valor_4') {
+                    $("#hivalor5").val('');
+                    $("#valor_5").val('');
+                    $("#valor_5").attr('disabled', false);
+                    $("#btn_continuar").prop('disabled', false);
+                } else if (item[0].id === 'valor_5') {
+                    $("#btn_continuar").prop('disabled', false);
+                } else if (item[0].id === 'int_fin_1') {
+                    $("#hiinstitucion1").val('');
+                    if ($('#chk_credito_comp').is(':checked')) {
+                        $("#btn_continuar").prop('disabled', true);
+                        $('.int_fin_2').prop('disabled', true);
+                        $("#hiinstitucion2").val('');
+                        $("#int_fin_2").val('');
+                    } else {
+                        $("#btn_continuar").prop('disabled', true);
+                    }
+                } else if (item[0].id === 'int_fin_2') {
+                    $("#hiinstitucion2").val('');
+                    if ($('#chk_credito_comp').is(':checked')) {
+                        $("#btn_continuar").prop('disabled', true);
+                    } else {
+                        $("#btn_continuar").prop('disabled', true);
+                    }
+                }
+
+            }
+            $(document).ready(function () {
+//                $("#pantalla_1").css('display', 'none');
+//                $("#pantalla_2").css('display', 'none');
+//                $("#pantalla_3").css('display', 'inline');
+//                $("#pantalla_4").css('display', 'none');
+                $(".if2").hide();
+                $("#accordion").accordion();
+                $('#cargando').modal({
+                    backdrop: 'static',
+                    keyboard: false,
+                    show: false
+                });
+                $('#modal_final').modal({
+                    backdrop: 'static',
+                    keyboard: false,
+                    show: false
+                });
+
+                $("#entidad").autocomplete({
+                    autoFocus: true,
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $('#url').val() + 'menu/entidades',
+                            dataType: "jsonp",
+                            data: {
+                                term: request.term
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+
+                        $("#hientidad").val('');
+                        $("#hientidad").val(ui.item.id);
+                        $("#hientidadcompleto").val('');
+                        $("#hientidadcompleto").val(ui.item.value);
+                        deshabilitaXcambio($(this));
+//                        $("#cliente").removeAttr('disabled');
+//                        $("#cliente").val('');
+//                        $("#hipromotor").val('');
+//                        $("#proyecto").val('');
+//                        $("#hiproyecto").val('');
+//                        $("#proyecto").attr('disabled', true);
+
+//                        $("#btn_continuar").attr('disabled', true);
+
+
+                    },
+                    change: function (event, ui) {
+                        var ul = $("#entidad").autocomplete("instance").bindings[1];
+                        removeIfInvalid(event, ui, this, ul);
+
+                    }
+                });
+
+                $("#entidad").focus(function () {
+                    $("#entidad").autocomplete("search", "");
+                });
+                $("#cliente").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $('#url').val() + 'menu/cliente',
+                            dataType: "jsonp",
+                            data: {
+                                term: request.term,
+                                entidad: $("#hientidad").val()
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+                        $("#hipromotor").val('');
+                        $("#hipromotor").val(ui.item.value);
+                        deshabilitaXcambio($(this));
+//                        $("#proyecto").removeAttr('disabled');
+//                        $("#proyecto").val('');
+//                        $("#hiproyecto").val('');
+//                        $("#btn_continuar").attr('disabled', true);
+                    },
+                    change: function (event, ui) {
+                        var ul = $("#cliente").autocomplete("instance").bindings[1];
+                        removeIfInvalid(event, ui, this, ul);
+                    }
+                });
+                $("#cliente").focus(function () {
+                    $("#cliente").autocomplete("search", "");
+                });
+                $("#proyecto").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $('#url').val() + 'menu/proyectocon',
+                            dataType: "jsonp",
+                            data: {
+                                term: request.term,
+                                entidad: $("#hientidad").val(),
+                                promotor: $("#hipromotor").val()
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+                        $("#hiproyecto").val('');
+                        $("#hiproyecto").val(ui.item.value);
+                        deshabilitaXcambio($(this));
+                        //$("#btn_continuar").removeAttr('disabled');
+                    },
+                    change: function (event, ui) {
+                        var ul = $("#proyecto").autocomplete("instance").bindings[1];
+                        removeIfInvalid(event, ui, this, ul);
+
+                    }
+                });
+                $("#proyecto").focus(function () {
+                    $("#proyecto").autocomplete("search", "");
+                });
+                $("#valor_1").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $('#url').val() + 'menu/claveuno',
+                            dataType: "jsonp",
+                            data: {
+                                term: request.term,
+                                entidad: $("#hientidad").val(),
+                                promotor: $("#hipromotor").val(),
+                                proyecto: $("#hiproyecto").val()
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+                        $("#hivalor1").val('');
+                        $("#hivalor1").val(ui.item.value);
+                        deshabilitaXcambio($(this));
+//                        $("#hivalor2").val('');
+//                        $("#valor_2").val('');
+//                        $("#valor_2").prop('disabled', false);
+//                        $("#hivalor3").val('');
+//                        $("#valor_3").val('');
+//                        $("#valor_3").attr('disabled', true);
+//                        $("#hivalor4").val('');
+//                        $("#valor_4").val('');
+//                        $("#valor_4").attr('disabled', true);
+//                        $("#hivalor5").val('');
+//                        $("#valor_5").val('');
+//                        $("#valor_5").attr('disabled', true);
+//                        $("#btn_continuar").attr('disabled', true);
+
+                    },
+                    change: function (event, ui) {
+                        var ul = $("#valor_1").autocomplete("instance").bindings[1];
+                        removeIfInvalid(event, ui, this, ul);
+
+                    }
+                });
+                $("#valor_1").focus(function () {
+                    $("#valor_1").autocomplete("search", "");
+                });
+                $("#valor_2").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $('#url').val() + 'menu/clavedos',
+                            dataType: "jsonp",
+                            data: {
+                                term: request.term,
+                                entidad: $("#hientidad").val(),
+                                promotor: $("#hipromotor").val(),
+                                proyecto: $("#hiproyecto").val(),
+                                valoruno: $("#hivalor1").val()
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+                        $("#hivalor2").val('');
+                        $("#hivalor2").val(ui.item.value);
+                        deshabilitaXcambio($(this));
+//                        $("#hivalor3").val('');
+//                        $("#valor_3").val('');
+//                        $("#valor_3").prop('disabled', false);
+//                        $("#hivalor4").val('');
+//                        $("#valor_4").val('');
+//                        $("#valor_4").attr('disabled', true);
+//                        $("#hivalor5").val('');
+//                        $("#valor_5").val('');
+//                        $("#valor_5").attr('disabled', true);
+//                        $("#btn_continuar").prop('disabled', true);
+                    },
+                    change: function (event, ui) {
+                        var ul = $("#valor_2").autocomplete("instance").bindings[1];
+                        removeIfInvalid(event, ui, this, ul);
+
+                    }
+                });
+                $("#valor_2").focus(function () {
+                    $("#valor_2").autocomplete("search", "");
+                });
+                $("#valor_3").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $('#url').val() + 'menu/clavetres',
+                            dataType: "jsonp",
+                            data: {
+                                term: request.term,
+                                entidad: $("#hientidad").val(),
+                                promotor: $("#hipromotor").val(),
+                                proyecto: $("#hiproyecto").val(),
+                                valoruno: $("#hivalor1").val(),
+                                valordos: $("#hivalor2").val()
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+                        $("#hivalor3").val('');
+                        $("#hivalor3").val(ui.item.value);
+                        deshabilitaXcambio($(this));
+//                        $("#hivalor4").val('');
+//                        $("#valor_4").val('');
+//                        $("#valor_4").attr('disabled', false);
+//                        $("#hivalor5").val('');
+//                        $("#valor_5").val('');
+//                        $("#valor_5").attr('disabled', true);
+//                        $("#btn_continuar").prop('disabled', true);
+                    },
+                    change: function (event, ui) {
+                        var ul = $("#valor_3").autocomplete("instance").bindings[1];
+                        removeIfInvalid(event, ui, this, ul);
+
+                    }
+                });
+                $("#valor_3").focus(function () {
+                    $("#valor_3").autocomplete("search", "");
+                });
+                $("#valor_4").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $('#url').val() + 'menu/clavecuatro',
+                            dataType: "jsonp",
+                            data: {
+                                term: request.term,
+                                entidad: $("#hientidad").val(),
+                                promotor: $("#hipromotor").val(),
+                                proyecto: $("#hiproyecto").val(),
+                                valoruno: $("#hivalor1").val(),
+                                valordos: $("#hivalor2").val(),
+                                valortres: $("#hivalor3").val()
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+                        $("#hivalor4").val('');
+                        $("#hivalor4").val(ui.item.value);
+                        deshabilitaXcambio($(this));
+//                        $("#hivalor5").val('');
+//                        $("#valor_5").val('');
+//                        $("#valor_5").attr('disabled', false);
+//                        $("#btn_continuar").prop('disabled', true);
+                    },
+                    change: function (event, ui) {
+                        var ul = $("#valor_4").autocomplete("instance").bindings[1];
+                        removeIfInvalid(event, ui, this, ul);
+
+                    }
+                });
+                $("#valor_4").focus(function () {
+                    $("#valor_4").autocomplete("search", "");
+                });
+                $("#valor_5").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $('#url').val() + 'menu/clavecinco',
+                            dataType: "jsonp",
+                            data: {
+                                term: request.term,
+                                entidad: $("#hientidad").val(),
+                                promotor: $("#hipromotor").val(),
+                                proyecto: $("#hiproyecto").val(),
+                                valoruno: $("#hivalor1").val(),
+                                valordos: $("#hivalor2").val(),
+                                valortres: $("#hivalor3").val(),
+                                valorcuatro: $("#hivalor4").val()
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+                        $("#hivalor5").val('');
+                        $("#hivalor5").val(ui.item.value);
+                        deshabilitaXcambio($(this));
+//                        $("#btn_continuar").prop('disabled', false);
+                    },
+                    change: function (event, ui) {
+                        var ul = $("#valor_4").autocomplete("instance").bindings[1];
+                        removeIfInvalid(event, ui, this, ul);
+
+                    }
+                });
+                $("#valor_5").focus(function () {
+                    $("#valor_5").autocomplete("search", "");
+                });
+                $("#int_fin_1").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $('#url').val() + 'menu/financieras',
+                            dataType: "jsonp",
+                            data: {
+                                term: request.term
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+                        $("#hiinstitucion1").val('');
+                        $("#hiinstitucion1").val(ui.item.value);
+                        if ($('#chk_credito_comp').is(':checked')) {
+                            $("#btn_continuar").prop('disabled', true);
+                            $('.int_fin_2').prop('disabled', false);
+                            $("#hiinstitucion2").val('');
+                            $("#int_fin_2").val('');
+                        } else {
+                            $("#btn_continuar").removeAttr('disabled');
+                        }
+                    },
+                    change: function (event, ui) {
+                        var ul = $("#int_fin_1").autocomplete("instance").bindings[1];
+                        removeIfInvalid(event, ui, this, ul);
+
+                    }
+                });
+                $("#int_fin_1").focus(function () {
+                    $("#int_fin_1").autocomplete("search", "");
+                });
+                $("#int_fin_2").autocomplete({
+                    source: function (request, response) {
+                        $.ajax({
+                            url: $('#url').val() + 'menu/financieras',
+                            dataType: "jsonp",
+                            data: {
+                                term: request.term,
+                                financiera: $("#hiinstitucion1").val()
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    },
+                    minLength: 0,
+                    select: function (event, ui) {
+                        $("#hiinstitucion2").val('');
+                        $("#hiinstitucion2").val(ui.item.value);
+                        if ($('#chk_credito_comp').is(':checked')) {
+                            $("#btn_continuar").removeAttr('disabled');
+                        } else {
+                            $("#btn_continuar").prop('disabled', true);
+                        }
+                    },
+                    change: function (event, ui) {
+                        var ul = $("#int_fin_2").autocomplete("instance").bindings[1];
+                        removeIfInvalid(event, ui, this, ul);
+
+                    }
+                });
+                $("#int_fin_2").focus(function () {
+                    $("#int_fin_2").autocomplete("search", "");
+                });
+                $('#chk_credito_comp').click(function () {
+                    if ($(this).is(':checked')) {
+                        $('#chk_credito_cancel').prop('checked', false);
+                        $("#chk_credito_cont").prop('checked', false);
+                        if ($("#int_fin_1").val() !== '') {
+                            $('.int_fin_2').prop('disabled', false);
+                        } else {
+                            $('.int_fin_2').prop('disabled', true);
+                        }
+                        $(".if2").show();
+                        $(".if1").show();
+                        $("#btn_continuar").prop('disabled', true);
+                        $("#if1_lbl").html('').html('Institucion Financiera 1:');
+                        $("#hiinstitucion3").val('');
+                        //$("#btn_continuar").removeAttr('disabled');
+                    } else {
+                        $('.int_fin_2').attr('disabled', true);
+                        $('input.int_fin_2').val('');
+                        $("#hiinstitucion2").val('');
+                        $(".if2").hide();
+                        //$("#btn_continuar").prop('disabled',true);
+                    }
+                });
+                $("#chk_credito_cont").click(function () {
+                    if ($(this).is(':checked')) {
+                        $('#chk_credito_comp').prop('checked', false);
+                        $("#chk_credito_cancel").prop('checked', false);
+                        $("#hiinstitucion1").val('');
+                        $("#hiinstitucion2").val('');
+                        $("#int_fin_1").val('');
+                        $("#int_fin_2").val('');
+                        $("#btn_continuar").removeAttr('disabled');
+                        $(".if1").hide();
+                        $(".if2").hide();
+                        $("#hiinstitucion3").val('Credito de Contado');
+                        $("#if1_lbl").html('').html('Institucion Individualizacion:');
+                    } else {
+                        $(".if1").show();
+                        $("#btn_continuar").prop('disabled', true);
+                        $("#hiinstitucion3").val('');
+                        $("#if1_lbl").html('').html('Institucion Financiera 1:');
+                    }
+                });
+                $("#chk_credito_cancel").click(function () {
+                    if ($(this).is(':checked')) {
+                        $('#chk_credito_comp').prop('checked', false);
+                        $("#chk_credito_cont").prop('checked', false);
+                        $("#hiinstitucion1").val('');
+                        $("#hiinstitucion2").val('');
+                        $("#int_fin_1").val('');
+                        $("#int_fin_2").val('');
+                        $("#btn_continuar").removeAttr('disabled');
+                        $(".if1").hide();
+                        $(".if2").hide();
+                        $("#hiinstitucion3").val('Cancelacion por Separado');
+                        $("#if1_lbl").html('').html('Institucion Individualizacion:');
+                    } else {
+                        $(".if1").show();
+                        $("#btn_continuar").prop('disabled', true);
+                        $("#hiinstitucion3").val('');
+                        $("#if1_lbl").html('').html('Institucion Financiera 1:');
+                    }
+                });
+                $("#btn_continuar").click(function () {
+                    var cont = $(this).attr('contador');
+                    var entidad = $("#hientidadcompleto").val();
+                    var cliente = $("#hipromotor").val();
+                    var proyecto = $("#hiproyecto").val();
+                    var valor1 = $("#hivalor1").val();
+                    var valor2 = $("#hivalor2").val();
+                    var valor3 = $("#hivalor3").val();
+                    var valor4 = $("#hivalor4").val();
+                    var valor5 = $("#hivalor5").val();
+                    var institucion1 = $("#hiinstitucion1").val();
+                    var institucion2 = $("#hiinstitucion2").val();
+                    var institucion3 = $("#hiinstitucion3").val();
+                    if (cont == '1') {
+                        if (valida($("#pantalla_1"))) {
+                            cont = '2';
+
+                            $("#btn_atras").attr('contador', '1');
+                            $("#pantalla_1").css('display', 'none');
+                            $("#pantalla_2").css('display', 'inline');
+                            $("#pantalla_3").css('display', 'none');
+                            $("#pantalla_4").css('display', 'none');
+                            if ($("#hivalor3").val() == '') {
+                                $(this).attr('disabled', true);
+                            } else {
+                                $(this).attr('disabled', false);
+                            }
+                            $("#btn_atras").prop('disabled', false);
+                        }
+                    } else if (cont == '2') {
+
+                        if (valida($("#pantalla_2"))) {
+
+                            cont = '3';
+                            $("#btn_atras").attr('contador', '2');
+                            $("#pantalla_1").css('display', 'none');
+                            $("#pantalla_2").css('display', 'none');
+                            $("#pantalla_3").css('display', 'inline');
+                            $("#pantalla_4").css('display', 'none');
+                            if ($("#chk_credito_cancel").is(':checked')) {
+                                $(this).attr('disabled', false);
+                            } else if ($("#chk_credito_cont").is(':checked')) {
+                                $(this).attr('disabled', false);
+                            } else if ($('#chk_credito_comp').is(':checked') && $("#hiinstitucion2").val() != '') {
+                                $(this).attr('disabled', false);
+                            } else if ($("#hiinstitucion1").val() != '' && !$('#chk_credito_comp').is(':checked')) {
+                                $(this).attr('disabled', false);
+                            } else {
+                                $(this).attr('disabled', true);
+                            }
+                            $("#btn_atras").prop('disabled', false);
+                            $("#accordion").accordion("refresh");
+                        }
+                    } else if (cont == '3') {
+                        if (valida($("#pantalla_3"))) {
+                            cont = '4';
+                            $("#btn_atras").attr('contador', '3');
+                            $("#pantalla_1").css('display', 'none');
+                            $("#pantalla_2").css('display', 'none');
+                            $("#pantalla_3").css('display', 'none');
+                            $("#pantalla_4").css('display', 'inline');
+                            $(this).html('').html('Confirmar');
+                            $("#btn_atras").prop('disabled', false);
+                            $("#lbl_entidad").html('').html(entidad);
+                            $("#lbl_promotor").html('').html(cliente);
+                            $("#lbl_proyecto").html('').html(proyecto);
+                            $("#lbl_valor1").html('').html(valor1);
+                            $("#lbl_valor2").html('').html(valor2);
+                            $("#lbl_valor3").html('').html(valor3);
+                            $("#lbl_valor4").html('').html(valor4);
+                            $("#lbl_valor5").html('').html(valor5);
+                            $("#lbl_institucion1").html('').html(institucion1);
+                            if ($('#chk_credito_comp').is(':checked') && $("#hiinstitucion2").val() != '') {
+                                $("#lbl_institucion2").html('').html(institucion2);
+                            } else if ($('#chk_credito_cont').is(':checked') && $("#hiinstitucion3").val() != '') {
+                                $("#lbl_institucion1").html('').html(institucion3);
+                            } else if ($('#chk_credito_cancel').is(':checked') && $("#hiinstitucion3").val() != '') {
+                                $("#lbl_institucion1").html('').html(institucion3);
+                            } else {
+                                $("#lbl_institucion1").html('').html(institucion1);
+                            }
+                        }
+                    } else if (cont == '4') {
+                        $(this).html('').html('Confirmar');
+                        $("#btn_atras").prop('disabled', true);
+                        $(this).prop('disabled', true);
+                        var data = $('#form_confirma').serialize();
+
+                        $.ajax({
+                            url: $('#url').val() + 'menu/confirma',
+                            dataType: "json",
+                            data: data,
+                            beforeSend: function () {
+                                $('#cargando').modal('show');
+                            }
+                        }).done(function (res) {
+                            if (res == 'ok') {
+                                $('#cargando').modal('hide');
+                                $('#modal_final').modal('show');
+
+                            } else if (res == 'fail') {
+                                $("#modal_error").modal('show');
+                                $('#cargando').modal('hide');
+                                $("#btn_continuar").prop('disabled', false);
+                                $("#btn_atras").prop('disabled', false);
+                            }
+                        }).fail(function (res) {
+                            $("#modal_error").modal('show');
+                            $('#cargando').modal('hide');
+                            $("#btn_continuar").prop('disabled', false);
+                            $("#btn_atras").prop('disabled', false);
+                        });
+                    }
+                    $(this).attr('contador', cont);
+                });
+                $('#btn_otra_cancelacion').click(function () {
+                    window.location.reload(true);
+                });
+                $('#btn_salir').click(function () {
+                    $.ajax({
+                        url: $('#url').val() + "/index/logout/",
+                        data: {'logout': 'salir'},
+                        type: 'POST',
+                        dataType: 'json'
+                    }).done(function (res) {
+                        if (res === true) {
+                            $(location).attr('href', "/appmovil");
+                        }
+
+                    }).fail(function (res) {
+                    });
+                });
+
+                $("#btn_atras").click(function () {
+                    var cont = $(this).attr('contador');
+                    if (cont == '0') {
+                        $(this).prop('disabled', true);
+                        $("#btn_continuar").attr('contador', '1');
+                        $("#btn_continuar").html('').html('Continuar');
+                    } else if (cont == '1') {
+                        cont = '0';
+                        $("#btn_continuar").attr('contador', '1');
+                        $("#btn_continuar").prop('disabled', false);
+                        $("#btn_continuar").html('').html('Continuar');
+                        $(this).prop('disabled', true);
+                        $("#pantalla_1").css('display', 'inline');
+                        $("#pantalla_2").css('display', 'none');
+                        $("#pantalla_3").css('display', 'none');
+                        $("#pantalla_4").css('display', 'none');
+                    } else if (cont == '2') {
+                        cont = '1';
+                        $("#btn_continuar").attr('contador', '2');
+                        $("#btn_continuar").prop('disabled', false);
+                        $("#btn_continuar").html('').html('Continuar');
+                        $("#pantalla_1").css('display', 'none');
+                        $("#pantalla_2").css('display', 'inline');
+                        $("#pantalla_3").css('display', 'none');
+                        $("#pantalla_4").css('display', 'none');
+                    } else if (cont == '3') {
+                        cont = '2';
+                        $("#btn_continuar").attr('contador', '3');
+                        $("#btn_continuar").prop('disabled', false);
+                        $("#btn_continuar").html('').html('Continuar');
+                        $("#pantalla_1").css('display', 'none');
+                        $("#pantalla_2").css('display', 'none');
+                        $("#pantalla_3").css('display', 'inline');
+                        $("#pantalla_4").css('display', 'none');
+                    }
+                    $(this).attr('contador', cont);
+                });
+            });
+
+        </script>
+    </head>
+
+    <body class="bg-light">
+        <div class="container" style="padding: 65px 15px 0;max-height: 100%; height: 100%; ">
+            <div style="display: inline; max-height: 90%; height: 90%; " class="row" id="pantalla_1">
+                <div class="col">
+                    <div class="row">
+                        <div class="col-12 offset-lg-3">
+                            <i class="fa fa-map-marker azul-iconos" aria-hidden="true" ></i>
+                            <label for="" class="StagSansMedium">Selecciona</label>
+                            <label for="" class="StagSansthin">tu entidad</label>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-lg-6 offset-lg-3">
+                                    <div class="ui-widget">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-addon azul-select text-light" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                            <input id="entidad" type="text" class="form-control azul-input" placeholder="Elige tu Entidad" aria-label="Entidad">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-12 offset-lg-3">
+                            <i class="fa fa-user azul-iconos" aria-hidden="true"></i>
+                            <label for="" class="StagSansMedium">Selecciona</label>
+                            <label for="" class="StagSansthin">un cliente Promotor</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-lg-6 offset-lg-3">
+                                    <div class="ui-widget">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-addon azul-select text-light" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                            <input type="text" class="form-control azul-input" id="cliente" placeholder="Cliente Promotor" aria-label="Promotor" disabled>                                  
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-12 offset-lg-3">
+                            <i class="fa fa-newspaper-o azul-iconos" aria-hidden="true"></i>
+                            <label for="" class="StagSansMedium">Selecciona</label>
+                            <label for="" class="StagSansthin">un Proyecto</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col-lg-6 offset-lg-3">
+                                    <div class="ui-widget">
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-addon azul-select text-light" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                            <input type="text" class="form-control azul-input" id="proyecto" placeholder="Elige un proyecto" aria-label="Proyecto" disabled>                                       
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                   
+                </div>
+            </div>
+            <div style="display: none; text-align: center;max-height: 90%; height: 90%;" class="row" id="pantalla_2">
+                <div class="col">
+                    <div class="row" style="text-align: center;">
+                        <div class="col-12">
+                            <i class="fa fa-mouse-pointer azul-iconos" aria-hidden="true"></i>
+                            <label for="" class="StagSansMedium">Selecciona</label>
+                            <label for="" class="StagSansthin">la vivienda a cancelar</label>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <!--                        <div class="col-5 bg-dark border negro-cuadros">Clave 1</div>
+                                                <div class="col-1"></div>-->
+                        <div class="col border rounded azul-cuadros padinglr">
+                            Valor 1
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <!--                        <div id="cve1" class="col-5 border rounded border-top-0 border-secondary letra-cuadros" disabled></div>
+                                                <div class="col-1"></div>-->
+                        <div class="col padinglr">
+                            <input type="text" class="form-control form-control-sm letra-input" id="valor_1" placeholder="" aria-label="Valor 1">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row justify-content-center">
+                        <!--                        <div class="col-5 bg-dark border negro-cuadros">Clave 2</div>
+                                                <div class="col-1"></div>-->
+                        <div class="col border azul-cuadros">Valor 2</div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <!--                        <div id="cve2" class="col-5 border rounded border-top-0 border-secondary letra-cuadros" disabled></div>
+                                                <div class="col-1"></div>-->
+                        <div class="col padinglr">
+                            <input type="text" class="form-control form-control-sm letra-input" id="valor_2" placeholder="" aria-label="Valor 2" disabled>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row justify-content-center">
+                        <!--                        <div class="col-5 bg-dark border negro-cuadros">Clave 3</div>
+                                                <div class="col-1"></div>-->
+                        <div class="col border rounded azul-cuadros">Valor 3</div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <!--                        <div id="cve3" class="col-5 border rounded border-top-0 border-secondary letra-cuadros" disabled></div>
+                                                <div class="col-1"></div>-->
+                        <div class="col padinglr">
+                            <input type="text" class="form-control form-control-sm letra-input"  id="valor_3" placeholder="" aria-label="Valor 3" disabled>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row justify-content-center">
+                        <div class="col border rounded azul-cuadros">Valor 4</div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col padinglr">
+                            <input type="text" class="form-control form-control-sm letra-input"  id="valor_4" placeholder="" aria-label="Valor 4" disabled>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row justify-content-center">
+                        <div class="col border rounded azul-cuadros">Valor 5</div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col padinglr">
+                            <input type="text" class="form-control form-control-sm letra-input"  id="valor_5" placeholder="" aria-label="Valor 5" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display: none;max-height: 90%; height: 90%;" id="pantalla_3" class="row">
+                <div class="col">
+
+                    <div class="row" style="text-align: center;">
+                        <div class="col-12">
+                            <i class="fa fa-mouse-pointer azul-iconos" aria-hidden="true"></i>
+                            <label for="" class="StagSansMedium">Selecciona</label>
+                            <label for="" class="StagSansthin">la instituci&oacute;n de individualizaci&oacute;n</label>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <div id="accordion">
+                                <h3>Cr&eacute;dito</h3>
+                                <div>
+
+                                    <div class="row text-center">
+                                        <div class="col">
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox" id="chk_credito_comp" class="custom-control-input">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description text-primary">Credito Compartido</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col-lg-6 offset-lg-3">
+                                                    <div class="ui-widget">
+                                                        <div class="input-group input-group-sm if1">
+                                                            <span class="input-group-addon azul-select text-light" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>                                        
+                                                            <input type="text" class="form-control azul-input" id="int_fin_1" placeholder="Institucion Financiera" aria-label="Institucion Financiera">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><br><br>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col-lg-6 offset-lg-3">
+                                                    <div class="ui-widget">
+                                                        <div class="input-group input-group-sm if2">
+                                                            <span class="input-group-addon azul-select text-light" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>                                        
+                                                            <input type="text" class="form-control azul-input int_fin_2" id="int_fin_2" placeholder="Institucion Financiera" aria-label="Institucion Financiera" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br><br>
+
+
+                                </div>
+                                <h3>Contado</h3>
+                                <div>
+                                    <div class="row text-center">
+                                        <div class="col">
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox" id="chk_credito_cont" class="custom-control-input">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description text-primary">Credito de Contado</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h3>Cancelaci&oacute;n</h3>
+                                <div>
+                                    <div class="row text-center">
+                                        <div class="col">
+                                            <label class="custom-control custom-checkbox">
+                                                <input type="checkbox" id="chk_credito_cancel" class="custom-control-input">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description text-primary">Cancelacion por Separado</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--                    <div class="row">
+                                            <div class="col">
+                                                <div id="accordionIndividualizacion" data-children=".item">
+                                                    <div class="item">
+                                                                                            <a data-toggle="collapse" data-parent="#accordionIndividualizacion" href="#accordionIndividualizacion1" role="button" aria-expanded="true" aria-controls="exampleAccordion1">
+                                                                                                Cr&eacute;dito
+                                                                                            </a>
+                                                        <div class="btn-group btn-group-lg btn-block" role="group" aria-label="Basic example">
+                                                            <button type="button" class="btn btn-secondary">Left</button>
+                    
+                                                            <button class="btn btn-block" aria-label="credito" aria-describedby="basic-addon1" data-toggle="collapse" data-parent="#accordionIndividualizacion" href="#accordionIndividualizacion1" role="button" aria-expanded="true" aria-controls="exampleAccordion1">
+                                                                Cr&eacute;dito
+                                                            </button>
+                                                        </div>
+                    
+                                                        <div id="accordionIndividualizacion1" class="collapse show text-center" role="tabpanel">
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <label class="custom-control custom-checkbox">
+                                                                        <input type="checkbox" id="chk_credito_comp" class="custom-control-input">
+                                                                        <span class="custom-control-indicator"></span>
+                                                                        <span class="custom-control-description text-primary">Credito Compartido</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div class="col-lg-6 offset-lg-3">
+                                                                            <div class="ui-widget">
+                                                                                <div class="input-group input-group-sm if1">
+                                                                                    <span class="input-group-addon azul-select text-light" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>                                        
+                                                                                    <input type="text" class="form-control azul-input" id="int_fin_1" placeholder="Institucion Financiera" aria-label="Institucion Financiera">
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="row">
+                                                                        <div class="col-lg-6 offset-lg-3">
+                                                                            <div class="ui-widget">
+                                                                                <div class="input-group input-group-sm if2">
+                                                                                    <span class="input-group-addon azul-select text-light" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>                                        
+                                                                                    <input type="text" class="form-control azul-input int_fin_2" id="int_fin_2" placeholder="Institucion Financiera" aria-label="Institucion Financiera" disabled>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item">
+                                                        <a data-toggle="collapse" data-parent="#accordionIndividualizacion" href="#accordionIndividualizacion2" role="button" aria-expanded="false" aria-controls="exampleAccordion2">
+                                                            Contado
+                                                        </a>
+                                                        <div id="accordionIndividualizacion2" class="collapse text-center" role="tabpanel">
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <label class="custom-control custom-checkbox">
+                                                                        <input type="checkbox" id="chk_credito_cont" class="custom-control-input">
+                                                                        <span class="custom-control-indicator"></span>
+                                                                        <span class="custom-control-description text-primary">Credito de Contado</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item">
+                                                        <a data-toggle="collapse" data-parent="#accordionIndividualizacion" href="#accordionIndividualizacion3" role="button" aria-expanded="false" aria-controls="exampleAccordion2">
+                                                            Cancelaci&oacute;n
+                                                        </a>
+                                                        <div id="accordionIndividualizacion3" class="collapse text-center" role="tabpanel">
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <label class="custom-control custom-checkbox">
+                                                                        <input type="checkbox" id="chk_credito_cancel" class="custom-control-input">
+                                                                        <span class="custom-control-indicator"></span>
+                                                                        <span class="custom-control-description text-primary">Cancelacion por Separado</span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>-->
+
+                    <!--                    <div class="row">
+                                            <div class="col-4">
+                                                <label class="custom-control custom-checkbox">
+                                                    <input type="checkbox" id="chk_credito_comp" class="custom-control-input">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description text-primary">Credito Compartido</span>
+                                                </label>
+                                            </div>
+                                            <div class="col-4">
+                                                <label class="custom-control custom-checkbox">
+                                                    <input type="checkbox" id="chk_credito_cont" class="custom-control-input">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description text-primary">Credito de Contado</span>
+                                                </label>
+                                            </div>
+                                            <div class="col-4">
+                                                <label class="custom-control custom-checkbox">
+                                                    <input type="checkbox" id="chk_credito_cancel" class="custom-control-input">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description text-primary">Cancelacion por Separado</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col-lg-6 offset-lg-3">
+                                                        <div class="ui-widget">
+                                                            <div class="input-group input-group-sm if1">
+                                                                <span class="input-group-addon azul-select text-light" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>                                        
+                                                                <input type="text" class="form-control azul-input" id="int_fin_1" placeholder="Institucion Financiera" aria-label="Institucion Financiera">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br><br><br>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col-lg-6 offset-lg-3">
+                                                        <div class="ui-widget">
+                                                            <div class="input-group input-group-sm if2">
+                                                                <span class="input-group-addon azul-select text-light" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>                                        
+                                                                <input type="text" class="form-control azul-input int_fin_2" id="int_fin_2" placeholder="Institucion Financiera" aria-label="Institucion Financiera" disabled>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>-->
+                </div>
+            </div>
+            <div style="display: none; max-height: 90%; height: 90%;" id="pantalla_4" class="row">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <div class="row" style="text-align: center;">
+                                <div class="col-lg-6 offset-lg-3">
+                                    <label><i class="fa fa-check-circle-o fa-5x color-confirmacion" aria-hidden="true"></i></label><br>
+                                    <label class="letra-confirmacion">Pantalla de Confirmaci&oacute;n</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 offset-lg-3">
+                                    <div class="StagSansMedium2">Usuario:</div>
+                                    <div id="userlab" class="letra-confirmacion-arial">
+                                    <?php echo Session::get('nb_usuario') ?>
+                                    <p>
+                                    <?php echo Session::get('cd_uid') ?> 
+                                    </p>
+                                    </div>
+                                    <div class="StagSansMedium2">Entidad Federativa:</div>
+                                    <div id="lbl_entidad" class="letra-confirmacion-arial"></div>
+                                    <div class="StagSansMedium2">Promotor:</div>
+                                    <div id="lbl_promotor" class="letra-confirmacion-arial"></div>
+                                    <div class="StagSansMedium2">Proyecto:</div>
+                                    <div id="lbl_proyecto" class="letra-confirmacion-arial"></div>
+                                    <div class="StagSansMedium2">Vivienda:</div>
+                                    <label id="lbl_valor1" class="letra-confirmacion-arial"></label>
+                                    <label id="lbl_valor2" class="letra-confirmacion-arial"></label>
+                                    <label id="lbl_valor3" class="letra-confirmacion-arial"></label>
+                                    <label id="lbl_valor4" class="letra-confirmacion-arial"></label>
+                                    <label id="lbl_valor5" class="letra-confirmacion-arial"></label>
+                                    <div class="StagSansMedium2" id="if1_lbl">Institucion Financiera 1:</div>
+                                    <div id="lbl_institucion1" class="letra-confirmacion-arial"></div>
+                                    <div class="StagSansMedium2 if2">Institucion Financiera 2:</div>
+                                    <div id="lbl_institucion2" class="letra-confirmacion-arial if2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="display: block;max-height: 10%; height: 10%; ">
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <button id="btn_atras" type="button" class="btn btn-lg btn-block rounded-0 azul-btn" contador="0" disabled>Atras</button>
+                        </div>
+                        <div class="col">
+                            <button id="btn_continuar" type="button" class="btn btn-lg btn-block rounded-0 azul-btn" contador="1" disabled>Continuar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div>
+            <form id="form_confirma">
+                <input type="hidden" id="hientidad" name="hientidad">
+                <input type="hidden" id="hientidadcompleto" name="hientidadcompleto">
+                <input type="hidden" id="hipromotor" name="hipromotor">
+                <input type="hidden" id="hiproyecto" name="hiproyecto">
+                <input type="hidden" id="hivalor1" name="hivalor1">
+                <input type="hidden" id="hivalor2" name="hivalor2">
+                <input type="hidden" id="hivalor3" name="hivalor3">
+                <input type="hidden" id="hivalor4" name="hivalor4">
+                <input type="hidden" id="hivalor5" name="hivalor5">
+                <input type="hidden" id="hiinstitucion1" name="hiinstitucion1">
+                <input type="hidden" id="hiinstitucion2" name="hiinstitucion2">
+                <input type="hidden" id="hiinstitucion3" name="hiinstitucion3">
+            </form>
+        </div>
+        <div class="modal fade bd-example-modal-sm" id="cargando" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content" style="background-color: transparent;border: 0;">
+
+                    <div class="modal-body text-center text-info">
+                        <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+                        <span class="sr-only">Cargando...</span><br>
+                        <label class="text-info">Espere...</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade bd-example-modal-sm" id="modal_error" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Alerta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="text-danger">Error al guardar!</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modal_final" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Alerta</h5>                        
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Desea Realizar Otra Cancelaci&oacute;n o Salir?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btn_otra_cancelacion" class="btn btn-primary">Otra</button>
+                        <button type="button" id="btn_salir" class="btn btn-secondary">Salir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modal_valida" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Alerta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>                        
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-danger">Seleccione los siguientes datos:</p>
+                        <p class="text-info" id="item_valida"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btn_salir" class="btn btn-secondary" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <script type="text/javascript">
+            $(document).ready(function () {
+//                $('#cargando').modal({
+//                    keyboard: false,
+//                    show: false
+//                });
+
+                $("#btn_login").click(function () {
+                    var $_this = $(this);
+                    $_this.addClass('disabled');
+
+                    if ($("#form_login").validationEngine('validate')) {
+                        var data = $("#form_login").serialize();
+
+                        $.ajax({
+                            url: "index/login/",
+                            data: data,
+                            type: 'POST',
+                            dataType: 'json'
+                        }).done(function (res) {
+                            if (res == 'OK') {
+                                $_this.removeClass('disabled');
+                                $(location).attr('href', '<?php echo PUBLIC_PATH . 'menu/' ?>');
+
+                            } else if (res === 'fail') {
+                                $_this.removeClass('disabled');
+                                //$('#cargando').modal('hide');
+                                
+                                $('#modal_error').modal('show');
+                            } else if (res === false) {
+                                //$('#cargando').modal('hide');
+                                $('#modal_error').modal('show');
+                                $_this.removeClass('disabled');
+                            } else {
+                                //$('#cargando').modal('hide');
+                            }
+                        }).fail(function (res) {
+                            //$('#cargando').modal('hide');
+                            $_this.removeClass('disabled');
+                            $('#modal_error').modal('show');
+                        });
+                    } else {
+                        $_this.removeClass('disabled');
+                        //$('#cargando').modal('hide');
+                    }
+                });
+
+            });
+
+        </script>
+    </head>
+    <body>
+        <div class="container">
+         <div class="row justify-content-center noshowthis">
+                <div class="center-block">
+                    <?php echo Html::img('default/pantalla1.png', 'BBVA', 'style="height: 200px;"') ?>
+                </div>
+            </div>
+            <div class="row justify-content-center text-primary noshowthis">
+
+                <div class="col-9">
+                    <div class="StagSansthin" style="font-size: 27px;text-align: center;">Identificaci&oacute;n <br>de cancelaciones</div>
+                </div>
+
+            </div>
+            
+        </div>
+        <div class="container">
+            <div class="row justify-content-center text-primary">
+                <div class="col-9 border border-primary rounded c">
+                    <div class="card-content blue-text">
+                        <form id="form_login">
+                            <div class="form-group">
+                                <div class="row text-center">
+                                    <div class="col"><label for="usuario" class="StagSansthin">Usuario</label></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-1 text-right"><i class="fa fa-user-o" aria-hidden="true"></i></div>
+                                    <div class="col-10">
+
+                                        <input type="text" class="form-control form-control-sm validate[required]" id="usuario" name="usuario" placeholder="Escribe el usuario">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="row text-center">
+                                    <div class="col-12"><label for="password" class="StagSansthin">Contrase&ntilde;a</label></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-1 text-right"><i class="fa fa-key" aria-hidden="true"></i></div>
+                                    <div class="col-10">
+                                        <input type="password" class="form-control form-control-sm validate[required]" id="password" name="password" placeholder="Escribe tu clave">
+                                    </div>
+                                </div>                               
+                            </div> 
+                        </form>                       
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row fixed-bottom">
+            <div class="col">
+                <button id="btn_login" type="button" class="btn btn-lg btn-block rounded-0 azul-btn" >Ingresar</button>
+            </div>
+        </div>
+<!--        <div class="modal fade bd-example-modal-sm" id="cargando" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content" style="background-color: transparent;border: 0;">
+
+                    <div class="modal-body text-center text-info">
+                        <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+                        <span class="sr-only">Cargando...</span><br>
+                        <label class="text-info">Espere...</label>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+        <div class="modal fade bd-example-modal-sm" id="modal_error" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Alerta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="text-warning">Usuario y/o Contraseña Incorrectos</label>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+</html>
